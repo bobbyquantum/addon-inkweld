@@ -1,0 +1,23 @@
+#!/command/with-contenv bashio
+
+bashio::log.info "Starting Inkweld service with ingress support..."
+
+# Source environment variables if the file exists
+if [ -f "/app/inkweld.env" ]; then
+  bashio::log.info "Loading configuration from /app/inkweld.env"
+  set -a
+  . /app/inkweld.env
+  set +a
+else
+  bashio::log.warning "Environment file not found. Using default configuration."
+fi
+
+# Change to the server directory
+cd /app/server
+
+# Log the merged allowed origins
+bashio::log.info "Using allowed origins: $ALLOWED_ORIGINS"
+
+# Start the server with the correct environment variables
+bashio::log.info "Starting server with all configuration options from Home Assistant"
+exec node dist/main.js

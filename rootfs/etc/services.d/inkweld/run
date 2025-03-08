@@ -18,12 +18,19 @@ INGRESS_URL=$(bashio::addon.ingress_url)
 export PUBLIC_URL="${INGRESS_URL}"
 export CLIENT_URL="${INGRESS_URL}"
 
-# Convert allowed origins to list for CORS
-ALLOWED_ORIGINS="${INGRESS_URL}"
+# Get user-configured allowed origins
+USER_ALLOWED_ORIGINS=$(bashio::config 'allowed_origins')
+
+# Start with user-configured allowed origins and add ingress URL for CORS
+ALLOWED_ORIGINS="${USER_ALLOWED_ORIGINS},${INGRESS_URL}"
+
+# Add external URL if port is exposed
 if [ "$(bashio::addon.port)" != "null" ]; then
     EXTERNAL_URL="http://$(bashio::addon.hostname):$(bashio::addon.port)"
     ALLOWED_ORIGINS="${ALLOWED_ORIGINS},${EXTERNAL_URL}"
 fi
+
+# Export the combined allowed origins
 export ALLOWED_ORIGINS="${ALLOWED_ORIGINS}"
 
 # Auth configuration
@@ -48,7 +55,9 @@ bashio::log.info "Database type: $DB_TYPE"
 bashio::log.info "Port: $PORT"
 bashio::log.info "Public URL: $PUBLIC_URL"
 bashio::log.info "Local users enabled: $LOCAL_USERS_ENABLED"
+bashio::log.info "Allowed origins: $ALLOWED_ORIGINS"
 bashio::log.info "GitHub auth enabled: $GITHUB_ENABLED"
+bashio::log.info "Ingress enabled on port 8099"
 
 # Start the application
 cd /app/server

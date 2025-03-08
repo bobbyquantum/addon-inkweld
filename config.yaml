@@ -12,7 +12,7 @@ arch:
   - i386
 startup: application
 ingress: true
-ingress_port: 8333
+ingress_port: 8099
 panel_icon: mdi:file-document-edit
 panel_title: Inkweld
 ports:
@@ -35,10 +35,16 @@ options:
   github_client_id: ""
   github_client_secret: ""
   data_path: "/data/yjs"
+  public_url: "http://localhost:8333"
+  client_url: "http://localhost:8333" 
+  allowed_origins: "http://localhost:8333"
 schema:
   db_type: "str"
   db_path: "str"
   db_logging: "bool"
+  public_url: "str"
+  client_url: "str"
+  allowed_origins: "str"
   port: "port"
   host: "str"
   local_users_enabled: "bool"

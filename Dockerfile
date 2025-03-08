@@ -14,6 +14,7 @@ RUN apt-get update && \
   git \
   python3 \
   make \
+  nginx \
   sqlite3 \
   g++ \
   ca-certificates \
@@ -48,11 +49,16 @@ WORKDIR /app
 # Copy rootfs for Home Assistant integration
 COPY rootfs /
 
-# Ensure S6 scripts are executable 
-RUN chmod a+x /etc/services.d/inkweld/run \
+# Ensure S6 scripts and service files are executable 
+RUN chmod a+x \
+  /usr/bin/inkweld-service \
+  /etc/services.d/inkweld/run \
   /etc/services.d/inkweld/finish \
-  /etc/cont-init.d/00-inkweld-init
+  /etc/services.d/nginx/run \
+  /etc/services.d/nginx/finish \
+  /etc/cont-init.d/00-inkweld-init 
 
-EXPOSE 8333
+# Expose ports for both main app and ingress
+EXPOSE 8333 8099
 
 # Entrypoint is inherited from the Home Assistant base image

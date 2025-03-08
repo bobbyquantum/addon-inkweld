@@ -4,7 +4,7 @@
 bashio::log.info "Initializing Inkweld..."
 
 # Get config values from Home Assistant
-CONFIG_PATH=/data/options.json
+export CONFIG_PATH=/data/options.json
 
 # Database path
 DB_PATH=$(bashio::config 'db_path')
@@ -15,4 +15,51 @@ bashio::log.info "Creating data directories..."
 mkdir -p "$(dirname "$DB_PATH")"
 mkdir -p "$DATA_PATH"
 
+# Setup for ingress: Get the ingress URL
+INGRESS_URL=$(bashio::addon.ingress_url)
+INGRESS_HOST=$(bashio::addon.hostname)
+bashio::log.info "Detected ingress URL: ${INGRESS_URL}"
+bashio::log.info "Detected ingress hostname: ${INGRESS_HOST}"
+
+# Get the configured allowed origins
+ALLOWED_ORIGINS=$(bashio::config 'allowed_origins')
+
+# Update allowed origins to include the ingress URL if not already included
+if [[ $ALLOWED_ORIGINS != *"$INGRESS_URL"* ]]; then
+    ALLOWED_ORIGINS="$ALLOWED_ORIGINS,$INGRESS_URL"
+    bashio::log.info "Added ingress URL to allowed origins: $ALLOWED_ORIGINS"
+fi
+
+# Write an environment file for the service to use
+ENV_FILE="/app/inkweld.env"
+bashio::log.info "Writing environment configuration to $ENV_FILE"
+
+# Export all configuration options to the environment file
+cat > "$ENV_FILE" << EOL
+DB_TYPE=$(bashio::config 'db_type')
+DB_PATH=$(bashio::config 'db_path')
+DB_LOGGING=$(bashio::config 'db_logging')
+PORT=$(bashio::config 'port')
+HOST=$(bashio::config 'host')
+LOCAL_USERS_ENABLED=$(bashio::config 'local_users_enabled')
+GITHUB_ENABLED=$(bashio::config 'github_enabled')
+GITHUB_CLIENT_ID=$(bashio::config 'github_client_id')
+GITHUB_CLIENT_SECRET=$(bashio::config 'github_client_secret')
+DATA_PATH=$(bashio::config 'data_path')
+PUBLIC_URL=$(bashio::config 'public_url')
+CLIENT_URL=$(bashio::config 'client_url')
+ALLOWED_ORIGINS=$ALLOWED_ORIGINS
+INGRESS_URL=$INGRESS_URL
+EOL
+
+# Create directories for Nginx if they don't exist
+mkdir -p /run/nginx
+mkdir -p /etc/nginx/http.d
+
+# Make sure our Nginx service scripts are executable
+chmod +x /etc/services.d/nginx/run
+chmod +x /etc/services.d/nginx/finish
+
+bashio::log.info "Ingress configured with proxy on port 8099"
+bashio::log.info "Environment configuration written to $ENV_FILE"
 bashio::log.info "Inkweld initialization completed!"
