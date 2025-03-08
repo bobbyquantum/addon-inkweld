@@ -1,0 +1,89 @@
+#include <tunables/global>
+
+profile inkweld flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/openssl>
+
+  # Capabilities
+  capability net_bind_service,
+  capability setgid,
+  capability setuid,
+  capability dac_override,
+  file,
+  signal (send) set=(kill,term,int,hup,cont),
+
+  # Allow network access
+  network inet tcp,
+  network inet udp,
+  network inet stream,
+  network inet6 stream,
+  network inet dgram,
+  network inet6 dgram,
+  network raw,
+
+  # S6-Overlay permissions
+  /init ix,
+  /{,usr/}{,local/}bin/s6* ix,
+  /bin/** ix,
+  /usr/bin/** ix,
+  /run/{s6,s6-rc*,service}/** ix,
+  /package/** ix,
+  /command/** ix,
+  /etc/services.d/** rwix,
+  /etc/cont-init.d/** rwix,
+  /etc/cont-finish.d/** rwix,
+  /etc/s6/** rwix,
+  /run/{,**} rwk,
+  /var/run/{,**} rwk,
+  /var/run/s6/legacy-services/** rwk,
+  /lib/runit/runit-init ix,
+  /dev/tty rw,
+
+  # Bashio
+  # More comprehensive bashio permissions
+  /usr/bin/bashio ix,
+  /usr/lib/bashio/** rwix,
+  /usr/share/bashio/** rwix,
+  /usr/local/bin/bashio ix,
+  /usr/local/lib/bashio/** rwix,
+  /usr/local/share/bashio/** rwix,
+  /usr/bin/with-contenv ix,
+  /tmp/** rwk,
+  
+  # Additional executables used in S6
+  /usr/bin/execlineb ix,
+  /usr/bin/execline/** ix,
+  /usr/bin/s6-svscanctl ix,
+  /usr/bin/with-contenv ix,
+
+  # Access to /data directory for persistent storage
+  /data/** rwk,
+  /data/ r,
+  /share/** rw,
+  /addon_config/** rw,
+
+  # Access to files needed for execution
+  /app/** rix,
+  /root/.bun/** rix,
+  /usr/local/bin/bun rix,
+
+  # Access to configuration
+  /data/options.json r,
+
+  # Allow DNS resolution
+  /etc/** r,
+
+  # System required directories and files
+  /proc/sys/kernel/random/uuid r,
+  /dev/urandom r,
+  /proc/** r,
+  /dev/tty rw,
+  /sys/** r,
+
+  # Needed for Node.js/Bun
+  /opt/** rwix,
+
+  # Signal handling
+  signal (receive) peer=*_inkweld,
+}

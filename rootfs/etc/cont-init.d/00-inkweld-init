@@ -1,0 +1,18 @@
+#!/command/with-contenv bashio
+
+# Create necessary directories
+bashio::log.info "Initializing Inkweld..."
+
+# Get config values from Home Assistant
+CONFIG_PATH=/data/options.json
+
+# Database path
+DB_PATH=$(bashio::config 'db_path')
+DATA_PATH=$(bashio::config 'data_path')
+
+# Ensure data directories exist
+bashio::log.info "Creating data directories..."
+mkdir -p "$(dirname "$DB_PATH")"
+mkdir -p "$DATA_PATH"
+
+bashio::log.info "Inkweld initialization completed!"
