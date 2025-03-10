@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/command/with-contenv bashio
 echo "Nginx service stopped"

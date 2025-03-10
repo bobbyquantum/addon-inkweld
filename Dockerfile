@@ -51,7 +51,6 @@ COPY rootfs /
 
 # Ensure S6 scripts and service files are executable 
 RUN chmod a+x \
-  /usr/bin/inkweld-service \
   /etc/services.d/inkweld/run \
   /etc/services.d/inkweld/finish \
   /etc/services.d/nginx/run \

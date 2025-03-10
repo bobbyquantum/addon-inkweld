@@ -52,14 +52,6 @@ ALLOWED_ORIGINS=$ALLOWED_ORIGINS
 INGRESS_URL=$INGRESS_URL
 EOL
 
-# Create directories for Nginx if they don't exist
-mkdir -p /run/nginx
-mkdir -p /etc/nginx/http.d
-
-# Make sure our Nginx service scripts are executable
-chmod +x /etc/services.d/nginx/run
-chmod +x /etc/services.d/nginx/finish
-
 bashio::log.info "Ingress configured with proxy on port 8099"
 bashio::log.info "Environment configuration written to $ENV_FILE"
 bashio::log.info "Inkweld initialization completed!"
