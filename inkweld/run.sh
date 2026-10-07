@@ -22,8 +22,10 @@ fi
 DATABASE_KEY="$(cat "$SECRET_FILE")"
 export DATABASE_KEY
 
-# Trust X-Remote-User-* headers from the Supervisor's ingress proxy only.
+# Trust X-Remote-User-* headers from the Supervisor's ingress proxy only,
+# which always connects from its fixed address on the hassio network.
 export INGRESS_ENABLED=true
+export INGRESS_TRUSTED_PROXY=172.30.32.2
 INGRESS_ADMINS="$(option '.admins | join(",")')"
 export INGRESS_ADMINS
 
