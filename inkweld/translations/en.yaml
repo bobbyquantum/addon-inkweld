@@ -1,0 +1,23 @@
+configuration:
+  admins:
+    name: Inkweld admins
+    description: >-
+      Home Assistant usernames that are Inkweld administrators. Applied each
+      time someone opens Inkweld. Leave empty to make the first person who
+      opens Inkweld its administrator.
+  allowed_origins:
+    name: Allowed origins for the direct port
+    description: >-
+      Only needed for the direct port and passkeys. The addresses browsers use
+      for Home Assistant and the direct port, e.g.
+      http://homeassistant.local:8123 and http://homeassistant.local:8333.
+  webauthn_rp_id:
+    name: Passkey domain
+    description: >-
+      Hostname for passkeys on the direct port, e.g. homeassistant.local.
+      Defaults to homeassistant.local. Can't be changed once passkeys exist.
+  log_level:
+    name: Log level
+    description: How much Inkweld writes to the app log.
+network:
+  8333/tcp: Direct access for Inkweld desktop/mobile apps and MCP clients
