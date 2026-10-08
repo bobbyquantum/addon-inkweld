@@ -11,6 +11,8 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends jq \
   && rm -rf /var/lib/apt/lists/*
 
+# Health checks use the base image's HEALTHCHECK (GET /api/v1/health).
+
 COPY run.sh /run.sh
 RUN chmod 755 /run.sh
 
