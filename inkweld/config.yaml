@@ -1,5 +1,5 @@
 name: Inkweld
-version: "0.1.0-dev.2"
+version: "1.0.0-beta.1"
 slug: inkweld
 description: Collaborative writing and worldbuilding in your Home Assistant sidebar
 url: https://github.com/bobbyquantum/inkweld
@@ -17,13 +17,13 @@ panel_title: Inkweld
 # Household members who are not HA admins can write too.
 panel_admin: false
 
-# Optional direct port for the Inkweld desktop/mobile apps and MCP clients,
-# which can't use ingress. Off until a host port is set in the app's Network
+# Optional direct port for using Inkweld outside the sidebar (another browser,
+# installing it as an app) and for MCP clients, which can't use ingress. Off until a host port is set in the app's Network
 # settings; accounts reached this way sign in with a passkey or password.
 ports:
   8333/tcp: null
 ports_description:
-  8333/tcp: Direct access for Inkweld desktop/mobile apps and MCP clients
+  8333/tcp: Direct access outside the sidebar, and for MCP clients
 
 # SQLite and LevelDB files aren't safe to copy while they're being written.
 backup: cold
