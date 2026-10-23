@@ -20,11 +20,13 @@ remaining administrator always keeps them.
 With the list empty, the first person to open Inkweld becomes its
 administrator.
 
-## Desktop, mobile and MCP clients
+## Outside the sidebar, and MCP clients
 
-Inkweld's desktop and mobile apps and MCP clients can't sign in through Home
-Assistant. To use them, set a host port for `8333/tcp` in the app's
-**Network** settings, then:
+Inside the sidebar Inkweld can't be installed as an app, and MCP clients
+can't sign in through Home Assistant. To open Inkweld directly (for example
+to install it as an app on your phone or computer) or to connect an MCP
+client, set a host port for `8333/tcp` in the app's **Network** settings,
+then:
 
 - add the addresses you open Home Assistant and the direct port on (for
   example `http://homeassistant.local:8123` and

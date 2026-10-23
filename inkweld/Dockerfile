@@ -1,10 +1,11 @@
 # Thin layer over the published Inkweld image: adds jq for reading the app
 # options and an entrypoint that maps them to Inkweld's environment.
 #
-# Prototype: `dev` is the latest build of Inkweld's main branch (amd64 +
-# arm64). Pin a release tag for v1. To test an unmerged Inkweld branch, push
-# an image built from it and point FROM at that tag.
-FROM ghcr.io/bobbyquantum/inkweld:dev
+# Pinned to an Inkweld release (amd64 + arm64). Home Assistant only rebuilds
+# the app when `version` in config.yaml changes, so bump both together. To
+# test an unreleased Inkweld build, point FROM at `dev` (the latest build of
+# Inkweld's main branch) or at an image built from a branch.
+FROM ghcr.io/bobbyquantum/inkweld:1.0.0-beta.1
 
 USER root
 RUN apt-get update \

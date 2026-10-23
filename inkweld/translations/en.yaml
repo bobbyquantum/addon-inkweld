@@ -20,4 +20,4 @@ configuration:
     name: Log level
     description: How much Inkweld writes to the app log.
 network:
-  8333/tcp: Direct access for Inkweld desktop/mobile apps and MCP clients
+  8333/tcp: Direct access outside the sidebar, and for MCP clients
