@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-beta.3
+
+- Runs [Inkweld 1.0.0-beta.3](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.3).
+- Fixes the Inkweld server silently dropping document edits. After updating,
+  documents it lost come back when a device that still has them opens them or
+  runs Sync All.
+
 ## 1.0.0-beta.1
 
 - Runs [Inkweld 1.0.0-beta.1](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.1),

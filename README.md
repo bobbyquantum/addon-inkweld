@@ -5,7 +5,7 @@ writing and worldbuilding app, as a Home Assistant app in your sidebar.
 Home Assistant signs people in, and each Home Assistant user gets their own
 Inkweld account.
 
-**Status:** beta, following [Inkweld 1.0.0-beta.1](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.1).
+**Status:** beta, following [Inkweld 1.0.0-beta.3](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.3).
 
 ## Installing
 
