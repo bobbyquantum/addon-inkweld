@@ -5,7 +5,7 @@
 # the app when `version` in config.yaml changes, so bump both together. To
 # test an unreleased Inkweld build, point FROM at `dev` (the latest build of
 # Inkweld's main branch) or at an image built from a branch.
-FROM ghcr.io/bobbyquantum/inkweld:1.0.0-beta.1
+FROM ghcr.io/bobbyquantum/inkweld:1.0.0-beta.3
 
 USER root
 RUN apt-get update \
