@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.0-beta.4
+
+- Runs [Inkweld 1.0.0-beta.4](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.4).
+- Disabling or rejecting an account, resetting its password or recovering its
+  passkey now disconnects any apps linked to it over MCP. Worth updating for
+  if you use MCP clients on the direct port.
+- Canvases have new text and effect options, and MCP clients can read and draw
+  on them. PDF export works offline.
+- Inkweld's new OpenID Connect sign-in isn't offered here: Home Assistant signs
+  people in.
+
 ## 1.0.0-beta.3
 
 - Runs [Inkweld 1.0.0-beta.3](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.3).
