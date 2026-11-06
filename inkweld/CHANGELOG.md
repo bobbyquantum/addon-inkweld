@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.0-beta.6
+
+- Runs [Inkweld 1.0.0-beta.6](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.6),
+  and with it the security fixes from
+  [1.0.0-beta.5](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.5),
+  which this app skipped. They fix several high-severity issues in sync,
+  sign-in and accounts, so update soon.
+- Project owners can share a live, read-only view of a project with a public
+  link (Project Settings → Collaboration). Visitors outside Home Assistant can
+  only open it through the direct port: the address the sidebar shows asks
+  them to sign in to Home Assistant.
+- The No AI / Allow AI choice is kept on your account, and dragging in the
+  project tree no longer collapses folders.
+
 ## 1.0.0-beta.4
 
 - Runs [Inkweld 1.0.0-beta.4](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.4).
