@@ -5,7 +5,7 @@
 # the app when `version` in config.yaml changes, so bump both together. To
 # test an unreleased Inkweld build, point FROM at `dev` (the latest build of
 # Inkweld's main branch) or at an image built from a branch.
-FROM ghcr.io/bobbyquantum/inkweld:1.0.0-beta.4
+FROM ghcr.io/bobbyquantum/inkweld:1.0.0-beta.6
 
 USER root
 RUN apt-get update \
@@ -17,4 +17,8 @@ RUN apt-get update \
 COPY run.sh /run.sh
 RUN chmod 755 /run.sh
 
+# Since 1.0.0-beta.5 the base image has an entrypoint that generates a key and
+# defaults WEBAUTHN_RP_ID when they're unset. run.sh sets both from the app's
+# data and options, so it replaces that entrypoint rather than running after it.
+ENTRYPOINT []
 CMD ["/run.sh"]
