@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.0-beta.7
+
+- Runs [Inkweld 1.0.0-beta.7](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.7).
+- The sidebar no longer tries to install Inkweld's offline service worker,
+  which Home Assistant ingress can't serve. That stops the 404 for
+  `/index.html` logged on the first visit and the failed install retried on
+  every load. The direct port keeps the service worker.
+- Public project links now have an on/off switch in Project Settings →
+  Collaboration, and the owner chooses whether visitors see comments and
+  activity. Read-only viewers can scroll documents, and visitors see media
+  thumbnails. As before, visitors outside Home Assistant need the direct
+  port.
+- MCP clients on the direct port can read, edit and roll time systems and
+  random generators.
+
 ## 1.0.0-beta.6
 
 - Runs [Inkweld 1.0.0-beta.6](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.6),
