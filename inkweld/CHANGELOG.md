@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-beta.9
+
+- Runs [Inkweld 1.0.0-beta.9](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.9),
+  and with it the change from
+  [1.0.0-beta.8](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.8),
+  which this app skipped.
+
 ## 1.0.0-beta.7
 
 - Runs [Inkweld 1.0.0-beta.7](https://github.com/bobbyquantum/inkweld/releases/tag/v1.0.0-beta.7).
