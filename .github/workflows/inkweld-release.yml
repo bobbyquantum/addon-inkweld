@@ -1,0 +1,130 @@
+name: Inkweld release
+
+# Opens a PR that moves the app to the newest Inkweld release, once that
+# release's image is on GHCR. It jumps straight to the newest release and
+# names any it skipped in the changelog. Inkweld's own release notes go in
+# the PR body: add the Home Assistant–relevant bullets to the changelog entry
+# before merging.
+#
+# Runs hourly; Actions → Inkweld release → Run workflow checks now. Inkweld can
+# also start it straight away with a repository_dispatch of type
+# inkweld-release (that needs a token with access to this repository).
+#
+# Needs "Allow GitHub Actions to create and approve pull requests"
+# (Settings → Actions → General) to open the PR. A PR opened with
+# GITHUB_TOKEN doesn't trigger pull_request workflows, so this starts Lint on
+# the new branch itself.
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [inkweld-release]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inkweld-release
+  cancel-in-progress: false
+
+env:
+  INKWELD_REPO: bobbyquantum/inkweld
+
+jobs:
+  bump:
+    name: Bump to the newest Inkweld release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Find the newest Inkweld release
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release list --repo "$INKWELD_REPO" --exclude-drafts --limit 50 \
+            --json tagName,isDraft > "$RUNNER_TEMP/releases.json"
+          node .github/scripts/inkweld-release.mjs plan "$RUNNER_TEMP/releases.json"
+
+      - name: Check nothing is already open for it
+        id: check
+        if: steps.plan.outputs.newer == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.plan.outputs.version }}
+        run: |
+          branch="release/$VERSION"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "::notice::Branch $branch already exists; leaving it alone."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          open="$(gh pr list --state open --search "\"Inkweld $VERSION\" in:title" --json number --jq length)"
+          if [ "$open" != "0" ]; then
+            echo "::notice::A PR for Inkweld $VERSION is already open."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # release-please creates the GitHub release before the image is
+          # built, so wait for the image; the next run tries again.
+          if ! docker manifest inspect "ghcr.io/$INKWELD_REPO:$VERSION" > /dev/null 2>&1; then
+            echo "::notice::ghcr.io/$INKWELD_REPO:$VERSION isn't published yet; trying again next run."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "go=true" >> "$GITHUB_OUTPUT"
+
+      - name: Bump the app
+        if: steps.check.outputs.go == 'true'
+        env:
+          TAGS: ${{ steps.plan.outputs.tags }}
+        run: |
+          read -ra tags <<< "$TAGS"
+          node .github/scripts/inkweld-release.mjs apply "${tags[@]}"
+          git diff --stat
+
+      - name: Open the PR
+        if: steps.check.outputs.go == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.plan.outputs.version }}
+          TAGS: ${{ steps.plan.outputs.tags }}
+          BRANCH: ${{ steps.check.outputs.branch }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git commit --all --message "feat: run Inkweld $VERSION"
+          git push origin "$BRANCH"
+
+          body="$RUNNER_TEMP/pr-body.md"
+          {
+            echo "Moves the app to [Inkweld $VERSION](https://github.com/$INKWELD_REPO/releases/tag/v$VERSION); its image is published."
+            echo
+            echo "**Before merging:** add bullets to the \`$VERSION\` entry in \`inkweld/CHANGELOG.md\` for what matters in Home Assistant (security fixes first, sidebar vs. direct port, HA sign-in), and check nothing below changes what \`run.sh\`, \`config.yaml\` or \`DOCS.md\` rely on."
+            read -ra tags <<< "$TAGS"
+            for tag in "${tags[@]}"; do
+              echo
+              echo "## Inkweld $tag release notes"
+              echo
+              gh release view "$tag" --repo "$INKWELD_REPO" --json body --jq .body
+            done
+          } > "$body"
+          # A PR body holds at most 65536 characters.
+          if [ "$(wc -c < "$body")" -gt 60000 ]; then
+            head -c 60000 "$body" > "$body.cut"
+            printf '\n\n…cut short; see the release pages for the rest.\n' >> "$body.cut"
+            mv "$body.cut" "$body"
+          fi
+
+          gh pr create --base main --head "$BRANCH" \
+            --title "feat: run Inkweld $VERSION" --body-file "$body"
+          gh workflow run lint.yaml --ref "$BRANCH"
